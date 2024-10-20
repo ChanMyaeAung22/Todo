@@ -1,0 +1,199 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Todo App</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+    <div class="container">
+
+        <!-- header -->
+        <div class="header">
+            <h2>Todo List</h2>
+            <button class="addNewTaskButton">Add New Task</button>
+        </div>
+
+        <!-- input section -->
+        <div class="inputSection">
+                <input type="text" placeholder="Enter a new task..." class="inputTask">
+                <button class="addTaskButton">Add Task</button>
+        </div>
+
+        <!-- show items -->
+        <div class="taskList">
+            <!-- <div class="showItems">
+                <p class="todoLists"></p>
+                <div class="completeDeleteBtn">
+                    <button class="completeBtn">
+                    
+                    </button>
+                    <button class="deleteBtn">
+        
+                    </button>
+                </div>
+            </div> -->
+    
+        </div>
+        
+
+        <!-- footer -->
+         <div class="footer">
+            <button id="all" class="filter-btn">All</button>
+            <button id="activeButton" class="filter-btn">Active</button>
+            <button id="completed" class="filter-btn">Completed</button>
+            <button class="clearButton">Clear Completed</button>
+         </div>
+    </div>
+
+    <script>
+        let todos = [];
+        let addTaskButton = document.getElementsByClassName('addTaskButton')[0];
+        let inputTask = document.getElementsByClassName('inputTask')[0];
+        let taskList = document.getElementsByClassName('taskList')[0];
+        let clearButton = document.getElementsByClassName('clearButton')[0];
+        let activeBtn = document.getElementById('activeButton');
+        let allBtn = document.getElementById('all');
+        let completedBtn = document.getElementById('completed');
+
+        inputTask.addEventListener('keypress',function(e){
+            if(e.key == "Enter"){
+                if(inputTask.value == ""){
+                alert('No input data!');
+                return;
+            }
+
+            let todoItem = {
+                content : inputTask.value,
+                isComplete : false,
+            }
+
+            todos.push(todoItem);
+            inputTask.value = "";
+            showTodo(todos);
+            }
+        })
+
+        completedBtn.addEventListener('click',function(){
+            let completedTodos = todos.filter(function(todo){
+                return todo.isComplete;
+            })
+            showTodo(completedTodos);
+            completedBtn.classList.add('active');
+            if(activeBtn.classList.contains('active')){
+                activeBtn.classList.remove('active')
+            }
+            if(allBtn.classList.contains('active')){
+                allBtn.classList.remove('active')
+            }
+        })
+
+        allBtn.addEventListener('click',function(){
+            showTodo(todos);
+            allBtn.classList.add('active');
+            if(activeBtn.classList.contains('active')){
+                activeBtn.classList.remove('active')
+            }
+            if(completedBtn.classList.contains('active')){
+                completedBtn.classList.remove('active')
+            }
+        })
+
+        activeBtn.addEventListener('click',function(){
+            let activeTodos = todos.filter(function(todo){
+                return !todo.isComplete;
+            })
+            showTodo(activeTodos);
+            activeBtn.classList.add('active');
+            if(allBtn.classList.contains('active')){
+                allBtn.classList.remove('active')
+            }
+            if(completedBtn.classList.contains('active')){
+                completedBtn.classList.remove('active')
+            }
+        })
+
+        clearButton.addEventListener('click',function(){
+            todos = todos.filter(function(todo){
+                return !todo.isComplete;
+            })
+            showTodo(todos);
+        })
+
+       
+        addTaskButton.addEventListener('click',function(){
+
+            if(inputTask.value == ""){
+                alert('No input data!');
+                return;
+            }
+
+            let todoItem = {
+                content : inputTask.value,
+                isComplete : false,
+            }
+
+            todos.push(todoItem);
+            inputTask.value = "";
+            showTodo(todos);
+        });
+
+
+        function showTodo(todos){
+            taskList.innerHTML = "";
+            for(let i = 0; i < todos.length; i++){
+                let currentTodoItem = todos[i];
+                let div = document.createElement('div');
+                div.classList.add('showItems');
+                if(currentTodoItem.isComplete){
+                    div.classList.add('completed');
+                };
+                let p = document.createElement('p');
+                p.classList.add('todoLists');
+                p.innerText = currentTodoItem.content;
+                let completeDeleteBtn = document.createElement('div');
+                completeDeleteBtn.classList.add('completeDeleteBtn');
+                
+                let completeBtn = document.createElement('button');
+                completeBtn.classList.add('completeBtn');
+                completeBtn.innerText = "Complete";
+                completeBtn.addEventListener('click',function(){
+                if(todos[i].isComplete){
+                    todos[i].isComplete = false;
+                }else{
+                    todos[i].isComplete = true;
+                }
+                showTodo(todos);
+                });
+                if(currentTodoItem.isComplete){
+                    completeBtn.innerText = 'Un-complete';
+                }else{
+                    completeBtn.innerText = 'Complete';
+                }
+
+                let deleteBtn = document.createElement('deleteBtn');
+                deleteBtn.classList.add('deleteBtn');
+                deleteBtn.innerText = "Delete";
+                deleteBtn.addEventListener('click',function(){
+                    todos.splice(i,1);
+                    showTodo(todos);
+                })
+
+                completeDeleteBtn.appendChild(completeBtn);
+                completeDeleteBtn.appendChild(deleteBtn);
+                div.appendChild(p);
+                div.appendChild(completeDeleteBtn);
+                taskList.appendChild(div);
+            }
+        }
+
+       
+    
+        
+
+    </script>
+</body>
+</html>
+
+
